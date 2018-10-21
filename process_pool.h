@@ -4,19 +4,21 @@
 #include "communicator.h"
 
 using std::list;
-using PTCommunicator = shared_ptr<TCommunicator>;
 
 class TProcessPool
 {
-  PTCommunicator pWorld;
-  vector<PTCommunicator> comms;
+  // worldSize - размер коммуникатора MPI_COMM_WORLD
   int worldSize;
 
-  vector<int> busyProcRanks;
+  vector<TCommunicator*> workComms; // рабочие коммуникаторы
+
+  // ранги свободных процессов
+  // ранг 0 всегда занят - на нем работает "корневой" solver, решающий исходную задачу
   list<int> freeProcRanks;
 public:
   TProcessPool();
   ~TProcessPool();
   TCommunicator* GetFreeProcs(int count);
+  void ReleaseProcs(TCommunicator* pс);
 };
 
